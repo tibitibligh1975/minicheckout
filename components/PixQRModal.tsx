@@ -1,54 +1,85 @@
 'use client';
 
-import { Dialog, DialogContent } from "./ui/dialog";
+import { useState, useEffect } from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+import { API_URLS } from "@/config/api";
 import QRCode from "react-qr-code";
-import { PaymentStatus } from "@/types/payment";
-import { PaymentStatusIndicator } from "./PaymentStatusIndicator";
-import { useEffect, useState } from "react";
+import { Copy, Check } from "lucide-react";
 
 interface PixQRModalProps {
-  isOpen: boolean;
-  onClose: () => void;
   pixCode: string;
-  expiresIn: number;
-  status: PaymentStatus;
+  paymentId: string;
 }
 
-export function PixQRModal({ isOpen, onClose, pixCode, expiresIn, status }: PixQRModalProps) {
-  const [timeLeft, setTimeLeft] = useState(expiresIn);
+export default function PixQRModal({ pixCode, paymentId }: PixQRModalProps) {
+  const [open, setOpen] = useState(true);
+  const [copied, setCopied] = useState(false);
+  const [paymentStatus, setPaymentStatus] = useState('pending');
+
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(pixCode);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Erro ao copiar:', err);
+    }
+  };
 
   useEffect(() => {
-    if (!isOpen || status !== 'pending') return;
+    const checkPayment = async () => {
+      try {
+        const response = await fetch(API_URLS.verifyPayment, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ paymentId })
+        });
 
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 0) return 0;
-        return prev - 1;
-      });
-    }, 1000);
+        const data = await response.json();
+        if (data?.ok) {
+          setPaymentStatus('completed');
+          window.location.href = '/orders'; // Redireciona para a página de pedidos
+        }
+      } catch (error) {
+        console.error('Erro ao verificar pagamento:', error);
+      }
+    };
 
-    return () => clearInterval(timer);
-  }, [isOpen, status]);
+    const interval = setInterval(checkPayment, 5000); // Verifica a cada 5 segundos
+    return () => clearInterval(interval);
+  }, [paymentId]);
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="sm:max-w-md">
-        <div className="text-center space-y-4">
-          <h3 className="text-lg font-medium">Pagamento via PIX</h3>
+        <DialogHeader>
+          <DialogTitle>Pagamento via PIX</DialogTitle>
+        </DialogHeader>
+        <div className="flex flex-col items-center space-y-4">
+          <QRCode value={pixCode} size={256} />
           
-          {status === 'pending' && (
-            <>
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <QRCode value={pixCode} className="mx-auto" />
-              </div>
-              
-              <div className="text-sm text-gray-500">
-                Tempo restante: {Math.floor(timeLeft / 60)}:{String(timeLeft % 60).padStart(2, '0')}
-              </div>
-            </>
-          )}
+          <div className="flex items-center space-x-2 w-full">
+            <Input
+              readOnly
+              value={pixCode}
+              className="font-mono text-sm"
+            />
+            <Button
+              size="icon"
+              variant="outline"
+              onClick={copyToClipboard}
+            >
+              {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+            </Button>
+          </div>
 
-          <PaymentStatusIndicator status={status} />
+          {paymentStatus === 'pending' ? (
+            <p className="text-yellow-600">Aguardando pagamento...</p>
+          ) : (
+            <p className="text-green-600">Pagamento confirmado!</p>
+          )}
         </div>
       </DialogContent>
     </Dialog>
