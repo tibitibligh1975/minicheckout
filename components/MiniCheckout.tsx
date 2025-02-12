@@ -97,10 +97,10 @@ export default function MiniCheckout() {
       } else {
         throw new Error(data.message || 'Erro ao gerar PIX');
       }
-    } catch (error) {
+    } catch (error: any) {
       toast.error(error.message || 'Erro ao gerar código PIX');
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handlePayment = async () => {
@@ -170,7 +170,10 @@ export default function MiniCheckout() {
       <CardContent>
         <h2 className="text-2xl font-bold mb-6 text-center">Checkout</h2>
         
-        <Tabs value={paymentMethod} onValueChange={(value: "pix" | "credit") => setPaymentMethod(value)}>
+        <Tabs 
+          value={paymentMethod} 
+          onValueChange={setPaymentMethod}
+        >
           <TabsList className="grid w-full grid-cols-2 mb-6">
             <TabsTrigger value="pix">PIX</TabsTrigger>
             <TabsTrigger value="credit">Cartão de Crédito</TabsTrigger>
