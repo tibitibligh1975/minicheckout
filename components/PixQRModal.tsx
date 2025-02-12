@@ -1,5 +1,5 @@
 import { Dialog, DialogContent } from "./ui/dialog";
-import { QRCode } from "react-qr-code";
+import QRCode from "react-qr-code";
 import { PaymentStatus } from "@/types/payment";
 import { PaymentStatusIndicator } from "./PaymentStatusIndicator";
 import { useEffect, useState } from "react";
