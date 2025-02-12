@@ -30,7 +30,7 @@ export default function MiniCheckout() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: "17", // valor fixo do offerId
+          name: formData.name,
           email: formData.email,
           phone: formData.phone.replace(/\D/g, ''),
           cpf: formData.cpf.replace(/\D/g, ''),
