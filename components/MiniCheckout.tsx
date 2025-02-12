@@ -6,6 +6,7 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import PixQRModal from "./PixQRModal";
+import type { FormData } from '@/types';
 
 interface PaymentResponse {
   paymentId: string;
@@ -15,12 +16,12 @@ interface PaymentResponse {
 export default function MiniCheckout() {
   const [loading, setLoading] = useState(false);
   const [pixData, setPixData] = useState<PaymentResponse | null>(null);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
     cpf: "",
     phone: "",
-    value: "0"
+    amount: 0
   });
 
   const generatePixCode = async () => {
@@ -30,7 +31,7 @@ export default function MiniCheckout() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: formData.value,
+          name: formData.amount.toString(),
           email: formData.email,
           phone: formData.phone.replace(/\D/g, ''),
           cpf: formData.cpf.replace(/\D/g, ''),
@@ -106,12 +107,12 @@ export default function MiniCheckout() {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="value">Valor</Label>
+          <Label htmlFor="amount">Valor</Label>
           <Input
-            id="value"
-            name="value"
+            id="amount"
+            name="amount"
             type="number"
-            value={formData.value}
+            value={formData.amount}
             onChange={handleInputChange}
             placeholder="0.00"
           />
