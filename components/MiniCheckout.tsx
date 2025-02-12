@@ -159,7 +159,7 @@ export default function MiniCheckout() {
         
         <Tabs 
           value={paymentMethod} 
-          onValueChange={(value: "pix") => setPaymentMethod(value)}
+          onValueChange={setPaymentMethod as (value: string) => void}
         >
           <TabsList className="grid w-full grid-cols-1 mb-6">
             <TabsTrigger value="pix">PIX</TabsTrigger>
