@@ -1,4 +1,4 @@
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "./ui/dialog";
 import { QRCode } from "react-qr-code";
 import { PaymentStatus } from "@/types/payment";
 import { PaymentStatusIndicator } from "./PaymentStatusIndicator";
