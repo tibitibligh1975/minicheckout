@@ -1,4 +1,4 @@
-import { QRCode } from "react-qr-code";
+import QRCode from "react-qr-code";
 import { Button } from "@/components/ui/button";
 import { Copy, CheckCircle } from "lucide-react";
 import { useState } from "react";
