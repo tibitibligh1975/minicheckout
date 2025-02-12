@@ -13,7 +13,7 @@ import { maskCPF, maskPhone } from "@/utils/masks";
 import { toast } from "react-hot-toast";
 
 export default function MiniCheckout() {
-  const [paymentMethod, setPaymentMethod] = useState<"pix" | "credit">("pix");
+  const [paymentMethod, setPaymentMethod] = useState<"pix">("pix");
   const [loading, setLoading] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState<PaymentStatus>("pending");
   const [formData, setFormData] = useState({
@@ -113,11 +113,6 @@ export default function MiniCheckout() {
       validationErrors.cpf = "CPF inválido";
     }
 
-    if (paymentMethod === "credit") {
-      const cardErrors = validateCard(formData);
-      Object.assign(validationErrors, cardErrors);
-    }
-
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       setLoading(false);
@@ -139,14 +134,6 @@ export default function MiniCheckout() {
             cpf: formData.cpf,
             phone: formData.phone,
           },
-          ...(paymentMethod === "credit" && {
-            card: {
-              number: formData.cardNumber,
-              holder: formData.cardHolder,
-              expiry: formData.cardExpiry,
-              cvv: formData.cardCvv,
-            },
-          }),
         }),
       });
 
@@ -172,11 +159,10 @@ export default function MiniCheckout() {
         
         <Tabs 
           value={paymentMethod} 
-          onValueChange={setPaymentMethod}
+          onValueChange={(value: "pix") => setPaymentMethod(value)}
         >
-          <TabsList className="grid w-full grid-cols-2 mb-6">
+          <TabsList className="grid w-full grid-cols-1 mb-6">
             <TabsTrigger value="pix">PIX</TabsTrigger>
-            <TabsTrigger value="credit">Cartão de Crédito</TabsTrigger>
           </TabsList>
 
           <CustomerForm 
@@ -189,14 +175,6 @@ export default function MiniCheckout() {
             <PixPayment 
               pixCode={pixCode}
               loading={loading}
-            />
-          </TabsContent>
-
-          <TabsContent value="credit">
-            <CreditCardForm
-              formData={formData}
-              setFormData={setFormData}
-              errors={errors}
             />
           </TabsContent>
         </Tabs>
