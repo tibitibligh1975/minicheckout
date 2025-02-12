@@ -12,22 +12,30 @@ import { PixQRModal } from "./PixQRModal";
 import { maskCPF, maskPhone } from "@/utils/masks";
 import { toast } from "react-hot-toast";
 
+interface FormData {
+  name: string;
+  email: string;
+  cpf: string;
+  phone: string;
+  amount: number;
+  cardNumber: string;
+  cardHolder: string;
+  cardExpiry: string;
+  cardCvv: string;
+}
+
 export default function MiniCheckout() {
   const [paymentMethod, setPaymentMethod] = useState<"pix">("pix");
   const [loading, setLoading] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState<PaymentStatus>("pending");
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    cpf: "",
-    phone: "",
-    amount: 10.0,
-    cardNumber: "",
-    cardHolder: "",
-    cardExpiry: "",
-    cardCvv: "",
+  const [formData, setFormData] = useState<FormData>({
+    name: '',
+    email: '',
+    cpf: '',
+    phone: '',
+    amount: 0,
   });
-  const [pixCode, setPixCode] = useState("");
+  const [pixCode, setPixCode] = useState<string>("");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [transactionId, setTransactionId] = useState<string | null>(null);
@@ -167,7 +175,7 @@ export default function MiniCheckout() {
 
           <CustomerForm 
             formData={formData}
-            setFormData={setFormData}
+            setFormData={setFormData as React.Dispatch<React.SetStateAction<FormData>>}
             errors={errors}
           />
 
