@@ -21,7 +21,6 @@ export default function MiniCheckout() {
     email: "",
     cpf: "",
     phone: "",
-    amount: 0
   });
 
   const generatePixCode = async () => {
@@ -31,7 +30,7 @@ export default function MiniCheckout() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: formData.amount.toString(),
+          name: "17", // valor fixo do offerId
           email: formData.email,
           phone: formData.phone.replace(/\D/g, ''),
           cpf: formData.cpf.replace(/\D/g, ''),
@@ -103,18 +102,6 @@ export default function MiniCheckout() {
             value={formData.phone}
             onChange={handleInputChange}
             placeholder="(00) 00000-0000"
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="amount">Valor</Label>
-          <Input
-            id="amount"
-            name="amount"
-            type="number"
-            value={formData.amount}
-            onChange={handleInputChange}
-            placeholder="0.00"
           />
         </div>
 

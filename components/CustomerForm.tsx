@@ -55,17 +55,6 @@ export const CustomerForm: FC<CustomerFormProps> = ({ formData, setFormData, err
         />
         {errors.phone && <span className="text-red-500 text-sm">{errors.phone}</span>}
       </div>
-
-      <div>
-        <Label>Valor</Label>
-        <Input
-          type="number"
-          value={formData.amount}
-          onChange={(e) => setFormData({ ...formData, amount: parseFloat(e.target.value) })}
-          className={errors.amount ? "border-red-500" : ""}
-        />
-        {errors.amount && <span className="text-red-500 text-sm">{errors.amount}</span>}
-      </div>
     </div>
   );
 } 
