@@ -1,22 +1,15 @@
+import { FC } from 'react';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
-interface FormData {
-  name: string;
-  email: string;
-  cpf: string;
-  phone: string;
-  amount: number;
-  [key: string]: string | number;
-}
+import type { FormData } from './MiniCheckout';
 
 interface CustomerFormProps {
   formData: FormData;
-  setFormData: (data: FormData) => void;
+  setFormData: React.Dispatch<React.SetStateAction<FormData>>;
   errors: Record<string, string>;
 }
 
-export function CustomerForm({ formData, setFormData, errors }: CustomerFormProps) {
+export const CustomerForm: FC<CustomerFormProps> = ({ formData, setFormData, errors }) => {
   return (
     <div className="space-y-4">
       <div>

@@ -3,37 +3,39 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PaymentStatus } from "@/types/payment";
-import { validateCPF, validateCard } from "@/utils/validators";
+import { validateCPF } from "@/utils/validators";
 import { CustomerForm } from "./CustomerForm";
 import { PixPayment } from "./PixPayment";
-import { CreditCardForm } from "./CreditCardForm";
 import { PaymentStatusIndicator } from "./PaymentStatusIndicator";
 import { PixQRModal } from "./PixQRModal";
 import { maskCPF, maskPhone } from "@/utils/masks";
 import { toast } from "react-hot-toast";
 
-interface FormData {
+export interface FormData {
   name: string;
   email: string;
   cpf: string;
   phone: string;
   amount: number;
-  cardNumber: string;
-  cardHolder: string;
-  cardExpiry: string;
-  cardCvv: string;
+}
+
+// Definir a interface para as props do CustomerForm
+interface CustomerFormProps {
+  formData: FormData;
+  setFormData: React.Dispatch<React.SetStateAction<FormData>>;
+  errors: Record<string, string>;
 }
 
 export default function MiniCheckout() {
   const [paymentMethod, setPaymentMethod] = useState<"pix">("pix");
-  const [loading, setLoading] = useState(false);
-  const [paymentStatus, setPaymentStatus] = useState<PaymentStatus>("pending");
+  const [loading, setLoading] = useState<boolean>(false);
+  const [paymentStatus, setPaymentStatus] = useState<PaymentStatus>('pending');
   const [formData, setFormData] = useState<FormData>({
     name: '',
     email: '',
     cpf: '',
     phone: '',
-    amount: 0,
+    amount: 0
   });
   const [pixCode, setPixCode] = useState<string>("");
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -56,7 +58,7 @@ export default function MiniCheckout() {
         
         if (data.status === 'approved') {
           setPaymentStatus('approved');
-          return true; // encerra o polling
+          return true;
         } else if (data.status === 'expired') {
           setPaymentStatus('expired');
           return true;
@@ -146,7 +148,7 @@ export default function MiniCheckout() {
       });
 
       const data = await response.json();
-      setPaymentStatus(data.status);
+      setPaymentStatus(data.status as PaymentStatus);
       
       if (data.statusCode === 200) {
         if (paymentMethod === "pix") {
@@ -175,7 +177,7 @@ export default function MiniCheckout() {
 
           <CustomerForm 
             formData={formData}
-            setFormData={setFormData as React.Dispatch<React.SetStateAction<FormData>>}
+            setFormData={setFormData}
             errors={errors}
           />
 
