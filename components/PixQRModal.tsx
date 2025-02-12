@@ -1,3 +1,5 @@
+'use client';
+
 import { Dialog, DialogContent } from "./ui/dialog";
 import QRCode from "react-qr-code";
 import { PaymentStatus } from "@/types/payment";
