@@ -4,11 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PaymentStatus } from "@/types/payment";
 import { validateCPF, validateCard } from "@/utils/validators";
-import { CustomerForm } from "./components/CustomerForm";
-import { PixPayment } from "./components/PixPayment";
-import { CreditCardForm } from "./components/CreditCardForm";
-import { PaymentStatusIndicator } from "./components/PaymentStatusIndicator";
-import { PixQRModal } from "./components/PixQRModal";
+import { CustomerForm } from "./CustomerForm";
+import { PixPayment } from "./PixPayment";
+import { CreditCardForm } from "./CreditCardForm";
+import { PaymentStatusIndicator } from "./PaymentStatusIndicator";
+import { PixQRModal } from "./PixQRModal";
 import { maskCPF, maskPhone } from "@/utils/masks";
 import { toast } from "react-hot-toast";
 
