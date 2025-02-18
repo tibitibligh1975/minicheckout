@@ -17,7 +17,7 @@ export function OrderHistory() {
 
   useEffect(() => {
     fetchTransactions();
-  }, []);
+  }, []);''
 
   const fetchTransactions = async () => {
     try {

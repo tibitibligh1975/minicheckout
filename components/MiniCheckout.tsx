@@ -7,6 +7,7 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import PixQRModal from "./PixQRModal";
 import type { FormData } from '@/types';
+import { DialogContent } from "@/components/ui/dialog";
 
 interface PaymentResponse {
   paymentId: string;
@@ -26,25 +27,56 @@ export default function MiniCheckout() {
   const generatePixCode = async () => {
     setLoading(true);
     try {
-      const response = await fetch(API_URLS.generatePix, {
+      const pixPayload = {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone.replace(/\D/g, ''),
+        cpf: formData.cpf.replace(/\D/g, ''),
+        offerId: "3f45b855-f0a4-44c8-b343-6ab64a71e69c"
+      };
+
+      const pixResponse = await fetch(API_URLS.generatePix, {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(pixPayload)
+      });
+
+      if (!pixResponse.ok) {
+        const errorText = await pixResponse.text();
+        console.error('Erro da API:', errorText);
+        throw new Error(`Falha ao gerar PIX: ${errorText}`);
+      }
+
+      const pixData = await pixResponse.json();
+      console.log('PIX gerado:', pixData);
+
+      // Salva o pedido
+      console.log('Tentando salvar pedido...');
+      const orderResponse = await fetch(API_URLS.orders, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone.replace(/\D/g, ''),
-          cpf: formData.cpf.replace(/\D/g, ''),
-          offerId: "3f45b855-f0a4-44c8-b343-6ab64a71e69c"
+          customerName: formData.name,
+          customerEmail: formData.email,
+          amount: 17.00,
+          pixCode: pixData.pixCode,
+          paymentId: pixData.paymentId,
+          status: 'pending',
+          createdAt: new Date().toISOString()
         })
       });
 
-      if (!response.ok) throw new Error('Falha ao gerar PIX');
+      console.log('Resposta do salvamento:', await orderResponse.text());
 
-      const data = await response.json();
-      setPixData(data);
+      if (!orderResponse.ok) throw new Error('Falha ao salvar pedido');
+      
+      setPixData(pixData);
     } catch (error) {
-      console.error('Erro:', error);
-      alert('Erro ao gerar o PIX. Tente novamente.');
+      console.error('Erro completo:', error);
+      alert('Erro ao gerar o PIX. Verifique o console para mais detalhes.');
     } finally {
       setLoading(false);
     }

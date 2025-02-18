@@ -1,6 +1,11 @@
+import { redirect } from 'next/navigation';
 import MiniCheckout from "@/components/MiniCheckout";
 
 export default function Home() {
+  redirect('/login');
+}
+
+export function HomeContent() {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Header */}
